@@ -18,7 +18,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click.prevent="submitForm">登录</el-button>
+          <el-button class="tem100" type="primary" @click.prevent="submitForm">登录</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -30,52 +30,52 @@ export default {
   data() {
     return {
       formObj: {
-        username: "",
-        password: ""
+        username: '',
+        password: '',
       },
       rules: {
         username: [
-          { required: true, message: "请输入活动名称", trigger: "blur" }
+          { required: true, message: '请输入活动名称', trigger: 'blur' },
         ],
         password: [
-          { required: true, message: "请输入活动名称", trigger: "blur" },
-          { min: 3, max: 8, message: "长度在 3 到 8 个字符", trigger: "blur" }
-        ]
-      }
+          { required: true, message: '请输入活动名称', trigger: 'blur' },
+          { min: 3, max: 8, message: '长度在 3 到 8 个字符', trigger: 'blur' },
+        ],
+      },
     };
   },
 
   methods: {
     submitForm() {
-      this.$refs.formObj.validate(valid => {
+      this.$refs.formObj.validate((valid) => {
         if (valid) {
-          //验证成功触发
+          // 验证成功触发
           this.$http({
-            method: "post",
-            url: "http://localhost:8888/api/private/v1/login",
-            data: this.formObj
-          }).then(res => {
+            method: 'post',
+            url: 'http://localhost:8888/api/private/v1/login',
+            data: this.formObj,
+          }).then((res) => {
             const { data, meta } = res.data;
             if (meta.status === 200) {
-              //登录成功后跳转
-                this.$router.push("/");
-              //element  弹出框
+              // 登录成功后跳转
+              this.$router.push('/');
+              // element  弹出框
               this.$message({
                 message: meta.msg,
-                type: "success"
+                type: 'success',
               });
 
-              //登录成功后存一下token 值
-              window.localStorage.setItem("token", data.token);
+              // 登录成功后存一下token 值
+              window.localStorage.setItem('token', data.token);
             } else {
-              //element  弹出框
+              // element  弹出框
               this.$message.error(meta.msg);
             }
           });
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -97,7 +97,7 @@ export default {
   top: 50%;
   transform: translate(-50%, -50%);
 }
-.el-button {
+.tem100 {
   width: 100%;
 }
 </style>
