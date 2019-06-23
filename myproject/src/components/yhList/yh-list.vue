@@ -18,7 +18,7 @@
       </el-col>
       <!-- 添加数据按钮 -->
       <div style="margin-top: 15px;">
-        <el-button @click.prevent="listAdd" type="success" plain>添加用户</el-button>
+        <el-button @click.prevent="addDialog=true" type="success" plain>添加用户</el-button>
       </div>
     </el-row>
     <!-- 表格 -->
@@ -61,7 +61,7 @@
             ></el-button>
             <el-button
               type="success"
-              @click.prevent="permissions(scope.row.id,scope.row.username)"
+              @click.prevent="permissions(scope.row.id)"
               size="mini"
               icon="el-icon-check"
               plain
@@ -105,7 +105,7 @@
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button @click.prevent="editccDialog">取 消</el-button>
+        <el-button @click.prevent="cancelDialog">取 消</el-button>
         <el-button type="primary" @click.prevent="SubmitTo">确 定</el-button>
       </div>
     </el-dialog>
@@ -128,7 +128,7 @@
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button @click.prevent="quxiaoUser">取 消</el-button>
+        <el-button @click.prevent="editDialog=flase">取 消</el-button>
         <el-button type="primary" @click.prevent="editUser">确 定</el-button>
       </div>
     </el-dialog>
@@ -140,21 +140,22 @@
         <el-form-item label="用户名:" :label-width="formLabelWidth">{{assignRolesList.username}}</el-form-item>
         <!-- 下拉框 -->
         <el-form-item label="请选择角色:" :label-width="formLabelWidth">
-          <el-select v-model="assignRolesValue" placeholder="请选择角色">
+          {{assignRolesList.rid}}
+          <el-select v-model="assignRolesList.rid" placeholder="请选择">
+            <el-option label="请选择" :value="-1"></el-option>
             <el-option
               v-for="item in assignRolesNNList"
               :key="item.value"
-              :label="item.label"
-              :value="item.value"
-              :disabled="item.disabled"
+              :label="item.roleName"
+              :value="item.id"
             ></el-option>
           </el-select>
         </el-form-item>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button @click.prevent="mtYYc">取 消</el-button>
-        <el-button type="primary">确 定</el-button>
+        <el-button @click.prevent="assignRoles=false">取 消</el-button>
+        <el-button type="primary" @click.prevent="mtYYcTJJ">确 定</el-button>
       </div>
     </el-dialog>
   </el-card>
@@ -171,7 +172,7 @@ export default {
       //当前页
       pagenum: 1,
       //   页容量
-      pagesize: 8,
+      pagesize: 4,
       // 容量选项
       pageSizes: [4, 8, 12],
       // 总条数
@@ -180,7 +181,7 @@ export default {
       addDialog: false,
       // 设置表头的宽度
       formLabelWidth: "110px",
-      //添加弹框数据 双向绑定
+      //添加弹框数据
       addUser: {
         username: "",
         password: "",
@@ -189,7 +190,7 @@ export default {
       },
       //控制编辑模态框显示影藏
       editDialog: false,
-      // 编辑 修改数据 双向绑定
+      // 编辑 修改数据
       xiugUser: {
         username: "",
         email: "",
@@ -198,61 +199,44 @@ export default {
       },
       //控制分配角色模态框显示影藏
       assignRoles: false,
-      // 分配角色 修改数据 双向绑定
+      // 分配角色 获取的数据
       assignRolesList: {
         username: "",
-        id: ""
+        id: "",
+        rid: ""
       },
       // 分配用户角色下拉宽里的值
-      assignRolesNNList: [
-        {
-          value: "选项1",
-          label: "请选择角色",
-          disabled: true
-        },
-        {
-          value: "选项2",
-          label: "主管"
-        },
-        {
-          value: "选项3",
-          label: "测试角色"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
-      ],
-      assignRolesValue: "1"
+      assignRolesNNList: []
     };
   },
   methods: {
+    //获取用户数据列表
     nEget() {
       this.$http({
         method: "GET",
-        url: `http://localhost:8888/api/private/v1/users?pagenum=${
-          this.pagenum
-        }&pagesize=${this.pagesize}&query=${this.query}`,
-        headers: { Authorization: window.localStorage.getItem("token") }
+        url: `users?pagenum=${this.pagenum}&pagesize=${this.pagesize}&query=${
+          this.query
+        }`
       }).then(res => {
         // console.log(res.data);
         let { data, meta } = res.data;
         if (meta.status === 200) {
+          if (data.users.length === 0 && this.pagenum !== 1) {
+            this.pagenum--;
+            this.nEget();
+            return;
+          }
           this.tmList = data.users;
           this.total = data.total;
         }
       });
     },
-    // currentPage 改变时会触发   当前页
+    //分页 当前页 currentPage 改变时会触发
     currentChange(currentChange) {
       this.pagenum = currentChange;
       this.nEget();
     },
-    //pageSize 改变时会触发  每页条数
+    //分页 每页条数 pageSize 改变时会触发
     sizeChange(sizeChange) {
       this.pagesize = sizeChange;
       this.nEget();
@@ -260,10 +244,6 @@ export default {
     // 搜索
     search() {
       this.nEget();
-    },
-    // 添加用户按钮点击 弹出框
-    listAdd() {
-      this.addDialog = true;
     },
     // 添加用户弹出框  点击取消按钮事件
     cancelDialog() {
@@ -273,9 +253,8 @@ export default {
     SubmitTo() {
       this.$http({
         method: "post",
-        url: "http://localhost:8888/api/private/v1/users",
-        data: this.addUser,
-        headers: { Authorization: window.localStorage.getItem("token") }
+        url: "users",
+        data: this.addUser
       }).then(res => {
         console.log(res);
         if (res.data.meta.status === 201) {
@@ -301,8 +280,7 @@ export default {
         .then(() => {
           this.$http({
             method: "delete",
-            url: `http://localhost:8888/api/private/v1/users/${id}`,
-            headers: { Authorization: window.localStorage.getItem("token") }
+            url: `users/${id}`
           }).then(res => {
             this.$message({
               type: "success",
@@ -322,8 +300,7 @@ export default {
     editop(id) {
       this.$http({
         method: "GET",
-        url: `http://localhost:8888/api/private/v1/users/${id}`,
-        headers: { Authorization: window.localStorage.getItem("token") }
+        url: `users/${id}`
       }).then(res => {
         let { data, meta } = res.data;
         if (meta.status === 200) {
@@ -333,17 +310,12 @@ export default {
         }
       });
     },
-    //编辑用户弹框 里的取消按钮
-    quxiaoUser() {
-      this.editDialog = false;
-    },
     //编辑弹出框里  确认按钮  提交编辑后的内容
     editUser() {
       this.$http({
         method: "put",
-        url: `http://localhost:8888/api/private/v1/users/${this.xiugUser.id}`,
-        data: this.xiugUser,
-        headers: { Authorization: window.localStorage.getItem("token") }
+        url: `users/${this.xiugUser.id}`,
+        data: this.xiugUser
       }).then(res => {
         if (res.data.meta.status === 200) {
           this.$message({
@@ -359,8 +331,7 @@ export default {
     zTmg_state(id, mg_state) {
       this.$http({
         method: "put",
-        url: `http://localhost:8888/api/private/v1/users/${id}/state/${mg_state}`,
-        headers: { Authorization: window.localStorage.getItem("token") }
+        url: `users/${id}/state/${mg_state}`
       }).then(res => {
         let { data, meta } = res.data;
         if (meta.status === 200) {
@@ -372,28 +343,58 @@ export default {
       });
     },
     //点击用户权限 按钮
-    permissions(id, username) {
-      this.assignRoles = true;
-      this.assignRolesList.username = username;
-      //获取下拉框数据
-      // this.$http({
-      //   method: "GET",
-      //   url: `http://localhost:8888/api/private/v1/roles`,
-      //   headers: { Authorization: window.localStorage.getItem("token") }
-      // }).then(res => {
-      //   console.log(res);
-        
-      // });
+    permissions(id) {
+      this.$http({
+        method: "GET",
+        url: `users/${id}`
+      }).then(res => {
+        console.log(res);
+
+        let { data, meta } = res.data;
+        if (meta.status === 200) {
+          console.log(data.username);
+          this.assignRolesList.username = data.username;
+          this.assignRolesList.id = data.id;
+          this.assignRolesList.rid = data.rid;
+          //获取数据成功后给 设置 assignRoles 为 true   弹出框显示
+          this.assignRoles = true;
+          //获取下拉框数据
+          this.$http({
+            method: "GET",
+            url: `roles`
+          }).then(res => {
+            console.log(res);
+            let { data, meta } = res.data;
+            if (meta.status === 200) {
+              this.assignRolesNNList = data;
+            }
+          });
+        }
+      });
     },
-    //点击用户权限模态框 取消按钮
-    mtYYc() {
-      this.assignRoles = false;
+    //用户权限弹出框点确认
+    mtYYcTJJ() {
+      this.$http({
+        method: "put",
+        url: `users/${this.assignRolesList.id}/role`,
+        data: {
+          rid: this.assignRolesList.rid
+        }
+      }).then(res => {
+        let { data, meta } = res.data;
+        if (meta.status === 200) {
+          this.$message({
+            message: "分配角色成功",
+            type: "success"
+          });
+          this.assignRoles = false;
+        }
+      });
     }
   },
 
   //当vue 加载完成后执行
   mounted() {
-    //this.nEget(); 获取数据
     this.nEget();
   }
 };
