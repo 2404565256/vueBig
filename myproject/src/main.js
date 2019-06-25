@@ -7,8 +7,9 @@ import 'element-ui/lib/theme-chalk/index.css';
 
 import '@/assets/css/index.css';
 
-//把axios 提取为组件@/assets/js/myaxios.js
+// 把axios 提取为组件@/assets/js/myaxios.js
 import axios from '@/assets/js/myaxios.js';
+
 Vue.use(axios);
 
 

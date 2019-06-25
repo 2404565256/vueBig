@@ -34,21 +34,21 @@
 export default {
   methods: {
     logout() {
-      this.$confirm("是否要退出系统?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('是否要退出系统?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
       }).then(() => {
         this.$message({
-          type: "success",
-          message: "退出成功!",
-          duration: 500
+          type: 'success',
+          message: '退出成功!',
+          duration: 500,
         });
-        this.$router.push({ name: "login" });
-        window.localStorage.removeItem("token");
+        this.$router.push({ name: 'login' });
+        window.localStorage.removeItem('token');
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

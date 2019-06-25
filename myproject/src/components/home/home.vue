@@ -18,19 +18,13 @@
 </template>
 
 <script>
-import homeHeader from "@/components/home/home-header";
-import homeLeft from "@/components/home/home-left";
+import homeHeader from '@/components/home/home-header';
+import homeLeft from '@/components/home/home-left';
 
 export default {
   components: {
     homeHeader,
     homeLeft
-  },
-   mounted() {
-     let token = window.localStorage.getItem('token')
-     if(!token){
-          this.$router.push('/login');
-     }
   }
 };
 </script>

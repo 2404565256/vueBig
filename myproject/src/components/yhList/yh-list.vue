@@ -1,25 +1,20 @@
 <template>
   <el-card class="box-card">
     <!-- 面包屑导航 -->
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-      <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-    </el-breadcrumb>
+     <breadCrumbs one="用户管理" two="用户列表"/>
 
     <!-- 搜索框 -->
     <el-row>
       <el-col :span="6">
-        <div style="margin-top: 15px;margin-right: 10px;">
+        <div style="margin-right: 10px;">
           <el-input v-model="query" placeholder="请输入内容" class="input-with-select">
             <el-button @click.prevent="search" slot="append" icon="el-icon-search"></el-button>
           </el-input>
         </div>
       </el-col>
       <!-- 添加数据按钮 -->
-      <div style="margin-top: 15px;">
+      
         <el-button @click.prevent="addDialog=true" type="success" plain>添加用户</el-button>
-      </div>
     </el-row>
     <!-- 表格 -->
     <template>
@@ -140,12 +135,12 @@
         <el-form-item label="用户名:" :label-width="formLabelWidth">{{assignRolesList.username}}</el-form-item>
         <!-- 下拉框 -->
         <el-form-item label="请选择角色:" :label-width="formLabelWidth">
-          {{assignRolesList.rid}}
+          <!-- {{assignRolesList.rid}} -->
           <el-select v-model="assignRolesList.rid" placeholder="请选择">
             <el-option label="请选择" :value="-1"></el-option>
             <el-option
               v-for="item in assignRolesNNList"
-              :key="item.value"
+              :key="item.id"
               :label="item.roleName"
               :value="item.id"
             ></el-option>
@@ -163,13 +158,18 @@
 
 
 <script>
+import breadCrumbs from "@/components/home/breadCrumbs";
 export default {
+  // components  注册组件
+  components: {
+    breadCrumbs
+  },
   data() {
     return {
       tmList: [],
-      //查询关键字
+      // 查询关键字
       query: "",
-      //当前页
+      // 当前页
       pagenum: 1,
       //   页容量
       pagesize: 4,
@@ -177,18 +177,18 @@ export default {
       pageSizes: [4, 8, 12],
       // 总条数
       total: 0,
-      //控制添加模态框显示影藏
+      // 控制添加模态框显示影藏
       addDialog: false,
       // 设置表头的宽度
       formLabelWidth: "110px",
-      //添加弹框数据
+      // 添加弹框数据
       addUser: {
         username: "",
         password: "",
         email: "",
         mobile: ""
       },
-      //控制编辑模态框显示影藏
+      // 控制编辑模态框显示影藏
       editDialog: false,
       // 编辑 修改数据
       xiugUser: {
@@ -197,7 +197,7 @@ export default {
         mobile: "",
         id: ""
       },
-      //控制分配角色模态框显示影藏
+      // 控制分配角色模态框显示影藏
       assignRoles: false,
       // 分配角色 获取的数据
       assignRolesList: {
@@ -210,7 +210,7 @@ export default {
     };
   },
   methods: {
-    //获取用户数据列表
+    // 获取用户数据列表
     nEget() {
       this.$http({
         method: "GET",
@@ -219,7 +219,7 @@ export default {
         }`
       }).then(res => {
         // console.log(res.data);
-        let { data, meta } = res.data;
+        const { data, meta } = res.data;
         if (meta.status === 200) {
           if (data.users.length === 0 && this.pagenum !== 1) {
             this.pagenum--;
@@ -231,12 +231,12 @@ export default {
         }
       });
     },
-    //分页 当前页 currentPage 改变时会触发
+    // 分页 当前页 currentPage 改变时会触发
     currentChange(currentChange) {
       this.pagenum = currentChange;
       this.nEget();
     },
-    //分页 每页条数 pageSize 改变时会触发
+    // 分页 每页条数 pageSize 改变时会触发
     sizeChange(sizeChange) {
       this.pagesize = sizeChange;
       this.nEget();
@@ -264,7 +264,7 @@ export default {
           });
           this.nEget();
           this.addDialog = false;
-          for (let cksl in this.addUser) {
+          for (const cksl in this.addUser) {
             this.addUser[cksl] = "";
           }
         }
@@ -296,21 +296,21 @@ export default {
           });
         });
     },
-    //编辑用户弹出框  同时用当前数据源的ID去获取 数据渲染到编辑框里
+    // 编辑用户弹出框  同时用当前数据源的ID去获取 数据渲染到编辑框里
     editop(id) {
       this.$http({
         method: "GET",
         url: `users/${id}`
       }).then(res => {
-        let { data, meta } = res.data;
+        const { data, meta } = res.data;
         if (meta.status === 200) {
           this.xiugUser = data;
-          //获取数据成功后给 设置 editDialog 为 true   弹出框显示
+          // 获取数据成功后给 设置 editDialog 为 true   弹出框显示
           this.editDialog = true;
         }
       });
     },
-    //编辑弹出框里  确认按钮  提交编辑后的内容
+    // 编辑弹出框里  确认按钮  提交编辑后的内容
     editUser() {
       this.$http({
         method: "put",
@@ -333,7 +333,7 @@ export default {
         method: "put",
         url: `users/${id}/state/${mg_state}`
       }).then(res => {
-        let { data, meta } = res.data;
+        const { data, meta } = res.data;
         if (meta.status === 200) {
           this.$message({
             message: "设置状态成功",
@@ -342,29 +342,27 @@ export default {
         }
       });
     },
-    //点击用户权限 按钮
+    // 点击用户权限 按钮
     permissions(id) {
       this.$http({
         method: "GET",
         url: `users/${id}`
       }).then(res => {
-        console.log(res);
-
-        let { data, meta } = res.data;
+        // console.log(res);
+        const { data, meta } = res.data;
         if (meta.status === 200) {
-          console.log(data.username);
+          // console.log(data.username);
           this.assignRolesList.username = data.username;
           this.assignRolesList.id = data.id;
           this.assignRolesList.rid = data.rid;
-          //获取数据成功后给 设置 assignRoles 为 true   弹出框显示
+          // 获取数据成功后给 设置 assignRoles 为 true   弹出框显示
           this.assignRoles = true;
-          //获取下拉框数据
+          // 获取下拉框数据
           this.$http({
             method: "GET",
-            url: `roles`
+            url: "roles"
           }).then(res => {
-            console.log(res);
-            let { data, meta } = res.data;
+            const { data, meta } = res.data;
             if (meta.status === 200) {
               this.assignRolesNNList = data;
             }
@@ -372,7 +370,7 @@ export default {
         }
       });
     },
-    //用户权限弹出框点确认
+    // 用户权限弹出框点确认
     mtYYcTJJ() {
       this.$http({
         method: "put",
@@ -381,7 +379,7 @@ export default {
           rid: this.assignRolesList.rid
         }
       }).then(res => {
-        let { data, meta } = res.data;
+        const { data, meta } = res.data;
         if (meta.status === 200) {
           this.$message({
             message: "分配角色成功",
@@ -393,7 +391,7 @@ export default {
     }
   },
 
-  //当vue 加载完成后执行
+  // 当vue 加载完成后执行
   mounted() {
     this.nEget();
   }
@@ -403,6 +401,5 @@ export default {
 <style>
 .yh_fy {
   text-align: center;
-  margin-top: 20px;
 }
 </style>

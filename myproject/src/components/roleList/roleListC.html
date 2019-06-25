@@ -1,0 +1,100 @@
+<el-card class="box-card">
+  <!-- 面包屑导航 -->
+  <breadCrumbs one="权限管理" two="角色列表" />
+
+  <el-button @click.prevent="rolesDialog= true">添加角色</el-button>
+
+  <!-- 列表 -->
+  <template>
+    <el-table :data="tableData" style="width: 100%">
+      <el-table-column type="expand">
+        <template slot-scope="scope" class="ppco">
+          <!-- {{scope.row}} -->
+          <el-row style="margin-bottom: 10px;" v-for="(item1,index1) in scope.row.children" :key="index1">
+            <el-col :span="4">
+              <el-tag @close="deleteRoles(scope.row.id,item1.id,scope)" closable>
+                {{item1.authName}}
+                {{item1.id}}
+              </el-tag>
+              <i class="el-icon-arrow-right"></i>
+            </el-col>
+            <el-col :span="20">
+              <el-row v-for="(item2,index2) in item1.children" :key="index2">
+                <el-col :span="5">
+                  <el-tag type='success' @close="deleteRoles(scope.row.id,item2.id,scope)" closable> {{item2.authName}}
+                    {{item2.id}} </el-tag>
+                  <i class="el-icon-arrow-right"></i>
+                </el-col>
+                <el-col :span="19">
+                  <el-tag class="myelcss-tag" @close="deleteRoles(scope.row.id,item3.id,scope)" type="warning"
+                    v-for="(item3,index3) in item2.children" closable> {{item3.authName}} {{item3.id}} </el-tag>
+                </el-col>
+              </el-row>
+            </el-col>
+          </el-row>
+        </template>
+      </el-table-column>
+      <el-table-column label="角色名称" prop="roleName"></el-table-column>
+      <el-table-column label="角色描述" prop="roleDesc"></el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button type="primary" icon="el-icon-edit" @click="EditRole(scope.row)" plain size="mini"></el-button>
+          <el-button type="danger" icon="el-icon-delete" @click="deleteRole(scope.row.id)" plain size="mini"></el-button>
+          <el-button type="success" @click="dlogfpg(scope.row.children)" icon="el-icon-check" plain size="mini"></el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </template>
+
+
+  <!-- 添加角色 -->
+  <el-dialog title="添加角色" :visible.sync="rolesDialog">
+    <el-form :model="rolesUser">
+      <!-- :required="true"  显示红色的* -->
+
+      <el-form-item label="角色名称:" :label-width="formLabelWidth">
+        <el-input v-model="rolesUser.roleName" autocomplete="off"></el-input>
+      </el-form-item>
+
+      <el-form-item label="角色描述:" :label-width="formLabelWidth">
+        <el-input v-model="rolesUser.roleDesc" autocomplete="off"></el-input>
+      </el-form-item>
+    </el-form>
+
+    <div slot="footer" class="dialog-footer">
+      <el-button @click.prevent="rolesDialog=false">取 消</el-button>
+      <el-button type="primary" @click.prevent="AddingRoles">确 定</el-button>
+    </div>
+  </el-dialog>
+
+    <!-- 编辑角色 -->
+    <el-dialog title="编辑角色" :visible.sync="EditRoleTT">
+      <el-form :model="EditUser">
+        <!-- :required="true"  显示红色的* -->
+  
+        <el-form-item label="角色名称:" :label-width="formLabelWidth">
+          <el-input v-model="EditUser.roleName" autocomplete="off"></el-input>
+        </el-form-item>
+  
+        <el-form-item label="角色描述:" :label-width="formLabelWidth">
+          <el-input v-model="EditUser.roleDesc" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+  
+      <div slot="footer" class="dialog-footer">
+        <el-button @click.prevent="EditRoleTT=false">取 消</el-button>
+        <el-button type="primary" @click.prevent="EditSubmission" >确 定</el-button>
+      </div>
+    </el-dialog>
+
+
+  <!-- 分配权限 -->
+  <el-dialog title="分配权限" :visible.sync="AssignPfpk">
+    <el-tree :default-checked-keys="morxzWb" node-key="id" :data="dataFpg" show-checkbox :default-expand-all='true'
+      :props="defaultProps"></el-tree>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="AssignPfpk= false">取 消</el-button>
+      <el-button type="primary">确 定</el-button>
+    </div>
+  </el-dialog>
+</el-card>
