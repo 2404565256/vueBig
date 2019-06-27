@@ -24,8 +24,8 @@ import homeLeft from '@/components/home/home-left';
 export default {
   components: {
     homeHeader,
-    homeLeft
-  }
+    homeLeft,
+  },
 };
 </script>
 

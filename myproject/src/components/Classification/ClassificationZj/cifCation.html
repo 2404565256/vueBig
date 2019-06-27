@@ -1,0 +1,62 @@
+<el-card class="box-card">
+    <!-- 面包屑导航 -->
+    <breadCrumbs one="商品管理" two="商品分类" />
+    <el-button style="margin-bottom: 15px;" @click.prevent="clTion=true">添加分类</el-button>
+    <!-- 表格 -->
+    <el-table v-loading="loading" :data="pageList" border style="width: 100%">
+        <el-table-tree-column treeKey="cat_id" parentKey="cat_pid" levelKey="cat_level" prop="cat_name" label="分类名称"
+            file-icon="icon icon-file" folder-icon="icon icon-folder">
+        </el-table-tree-column>
+        <el-table-column label="级别">
+            <template slot-scope="scope">
+                {{scope.row.cat_level===0?"一级":scope.row.cat_level===1?"二级":"三级"}}
+            </template>
+        </el-table-column>
+        <el-table-column prop="cat_deleted" label="是否有效">
+            <template slot-scope="scope">
+                {{scope.row.cat_deleted?"有效":"无效"}}
+            </template>
+        </el-table-column>
+        <el-table-column label="操作">
+            <el-button type="primary" icon="el-icon-edit" plain size="mini">
+            </el-button>
+            <el-button type="danger" icon="el-icon-delete" plain size="mini">
+            </el-button>
+        </el-table-column>
+    </el-table>
+
+
+    <!-- 分页 -->
+    <el-pagination @size-change="pageSizeBi" @current-change="currentPageBi" :current-page="currentPage"
+        :page-sizes="pageSizes" :page-size="pageSize" layout="sizes, prev, pager, next, jumper,total" :total="toTal">
+    </el-pagination>
+
+    <!-- 添加分类弹出框 -->
+    <el-dialog title="添加分类" :visible.sync="clTion">
+        <el-form>
+            <!-- :required="true"  显示红色的* -->
+
+            <el-form-item label="分类名称:" :label-width="formLabelWidth">
+                <el-input v-model="addvalue" autocomplete="off"></el-input>
+            </el-form-item>
+
+            <el-form-item label="角色描述:" :label-width="formLabelWidth">
+                {{selvalue}}
+                <!-- 级联
+                - options: 数据源
+                - pops: 配置项
+                    - label: 文本属性
+                    - value: 对应的值
+                    - checkStrictly： 是否可以选择一项
+                    - expandTrigger： 触发下一级的方式 -->
+                <el-cascader  placeholder="默认添加一级分类" v-model="selvalue" clearable :options="clTionUser" :props="propsObj">
+                </el-cascader>
+            </el-form-item>
+        </el-form>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button @click.prevent="clTion=false">取 消</el-button>
+            <el-button type="primary" @click.prevent="addclTionFn3">确 定</el-button>
+        </div>
+    </el-dialog>
+</el-card>

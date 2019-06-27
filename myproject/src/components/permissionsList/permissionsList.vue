@@ -14,51 +14,52 @@
   </el-card>
 </template>
 </el-card>
-    
+
 </template>
 
 <script>
-import breadCrumbs from "@/components/home/breadCrumbs";
+import breadCrumbs from '@/components/home/breadCrumbs';
+
 export default {
   // components  注册组件
   components: {
-    breadCrumbs
+    breadCrumbs,
   },
   data() {
     return {
-      tableData: []
+      tableData: [],
     };
   },
   methods: {
     getList() {
       this.$http({
-        method: "get",
-        url: "http://localhost:8888/api/private/v1/rights/list"
-      }).then(res => {
-        let { data, meta } = res.data;
+        method: 'get',
+        url: 'http://localhost:8888/api/private/v1/rights/list',
+      }).then((res) => {
+        const { data, meta } = res.data;
         console.log(data);
         if (meta.status === 200) {
           this.tableData = data;
-          for (var i = 0; i < this.tableData.length; i++) {
+          for (let i = 0; i < this.tableData.length; i++) {
             switch (this.tableData[i].level) {
-              case "0":
-                this.tableData[i].level = "一级";
+              case '0':
+                this.tableData[i].level = '一级';
                 break;
-              case "1":
-                this.tableData[i].level = "二级";
+              case '1':
+                this.tableData[i].level = '二级';
                 break;
-              case "2":
-                this.tableData[i].level = "三级";
+              case '2':
+                this.tableData[i].level = '三级';
                 break;
             }
           }
         }
       });
-    }
+    },
   },
   mounted() {
     this.getList();
-  }
+  },
 };
 </script>
 

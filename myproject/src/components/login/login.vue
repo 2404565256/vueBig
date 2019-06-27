@@ -57,7 +57,7 @@ export default {
           }).then((res) => {
             const { data, meta } = res.data;
             if (meta.status === 200) {
-               // 登录成功后存一下token 值   必须在先设置 token 否则会有个BUG
+              // 登录成功后存一下token 值   必须在先设置 token 否则会有个BUG
               window.localStorage.setItem('token', data.token);
               // 登录成功后跳转
               this.$router.push('/');
@@ -66,7 +66,6 @@ export default {
                 message: meta.msg,
                 type: 'success',
               });
-
             } else {
               // element  弹出框
               this.$message.error(meta.msg);

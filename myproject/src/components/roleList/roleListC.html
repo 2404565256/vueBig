@@ -9,7 +9,7 @@
     <el-table :data="tableData" style="width: 100%">
       <el-table-column type="expand">
         <template slot-scope="scope" class="ppco">
-          <!-- {{scope.row}} -->
+          {{scope.row.id}}
           <el-row style="margin-bottom: 10px;" v-for="(item1,index1) in scope.row.children" :key="index1">
             <el-col :span="4">
               <el-tag @close="deleteRoles(scope.row.id,item1.id,scope)" closable>
@@ -27,7 +27,7 @@
                 </el-col>
                 <el-col :span="19">
                   <el-tag class="myelcss-tag" @close="deleteRoles(scope.row.id,item3.id,scope)" type="warning"
-                    v-for="(item3,index3) in item2.children" closable> {{item3.authName}} {{item3.id}} </el-tag>
+                    v-for="(item3,index3) in item2.children" :key="index3" closable> {{item3.authName}} {{item3.id}} </el-tag>
                 </el-col>
               </el-row>
             </el-col>
@@ -40,7 +40,7 @@
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" @click="EditRole(scope.row)" plain size="mini"></el-button>
           <el-button type="danger" icon="el-icon-delete" @click="deleteRole(scope.row.id)" plain size="mini"></el-button>
-          <el-button type="success" @click="dlogfpg(scope.row.children)" icon="el-icon-check" plain size="mini"></el-button>
+          <el-button type="success" @click="dlogfpg(scope.row)" icon="el-icon-check" plain size="mini"></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -90,11 +90,11 @@
 
   <!-- 分配权限 -->
   <el-dialog title="分配权限" :visible.sync="AssignPfpk">
-    <el-tree :default-checked-keys="morxzWb" node-key="id" :data="dataFpg" show-checkbox :default-expand-all='true'
+    <el-tree ref="sxccDc" :default-checked-keys="morxzWb" node-key="id" :data="dataFpg" show-checkbox :default-expand-all='true'
       :props="defaultProps"></el-tree>
     <div slot="footer" class="dialog-footer">
       <el-button @click="AssignPfpk= false">取 消</el-button>
-      <el-button type="primary">确 定</el-button>
+      <el-button type="primary" @click.prevent="EditFun">确 定</el-button>
     </div>
   </el-dialog>
 </el-card>
