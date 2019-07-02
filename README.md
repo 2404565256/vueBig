@@ -21,4 +21,3 @@ vue大项目
   - CND 优化
 - $nextTick 的使用
 
-### 6.0 vue 的移动端
