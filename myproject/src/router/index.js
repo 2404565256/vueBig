@@ -2,12 +2,18 @@ import Vue from 'vue';
 import Router from 'vue-router';
 // 单独引入 Message
 import { Message } from 'element-ui';
-import Home from '@/components/home/home';
-import logIn from '@/components/login/login';
-import yhList from '@/components/yhList/yh-list';
-import roleList from '@/components/roleList/roleList';
-import permissionsList from '@/components/permissionsList/permissionsList';
-import Classification from '@/components/Classification/Classification';
+
+const Home = () => import('@/components/home/home');
+const logIn = () => import('@/components/login/login');
+const yhList = () => import('@/components/yhList/yh-list');
+const roleList = () => import('@/components/roleList/roleList');
+const permissionsList = () => import('@/components/permissionsList/permissionsList');
+const Classification = () => import('@/components/Classification/Classification');
+const Goods = () => import('@/components/goods/goods');
+const GoodsAdd = () => import('@/components/goodsAdd/goodsAdd');
+const params = () => import('@/components/params/params');
+const reports = () => import('@/components/reports/reports');
+const orders = () => import('@/components/orders/orders');
 
 
 Vue.use(Router);
@@ -31,6 +37,11 @@ const router = new Router({
         { path: '/roles', name: 'roleList', component: roleList }, // 角色列表
         { path: '/rights', name: 'permissionsList', component: permissionsList }, // 权限列表
         { path: '/categories', name: 'Classification', component: Classification }, // 商品分类
+        { path: '/goods', name: 'goods', component: Goods }, // 商品分类  
+        { path: '/goodsAdd', name: 'goodsAdd', component: GoodsAdd }, // 商品分类 >添加用户
+        { path: '/params', name: 'params', component: params }, // 商品管理 >分类参数
+        { path: '/reports', name: 'reports', component: reports }, // 商品管理 >分类参数
+        { path: '/orders', name: 'orders', component: orders }, // 地图
       ],
     },
   ],

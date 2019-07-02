@@ -170,7 +170,7 @@ export default {
         const { meta } = res.data;
         if (meta.status === 200) {
           this.$message({
-            message: '创建角色成功',
+            message: '编辑角色成功',
             type: 'success',
           });
           this.getRoles();

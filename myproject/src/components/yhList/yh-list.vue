@@ -1,7 +1,7 @@
 <template>
   <el-card class="box-card">
     <!-- 面包屑导航 -->
-     <breadCrumbs one="用户管理" two="用户列表"/>
+    <breadCrumbs one="用户管理" two="用户列表"/>
 
     <!-- 搜索框 -->
     <el-row>
@@ -13,8 +13,7 @@
         </div>
       </el-col>
       <!-- 添加数据按钮 -->
-
-        <el-button @click.prevent="addDialog=true" type="success" plain>添加用户</el-button>
+      <el-button @click.prevent="addDialog=true" type="success" plain>添加用户</el-button>
     </el-row>
     <!-- 表格 -->
     <template>
@@ -158,18 +157,18 @@
 
 
 <script>
-import breadCrumbs from '@/components/home/breadCrumbs';
+import breadCrumbs from "@/components/home/breadCrumbs";
 
 export default {
   // components  注册组件
   components: {
-    breadCrumbs,
+    breadCrumbs
   },
   data() {
     return {
       tmList: [],
       // 查询关键字
-      query: '',
+      query: "",
       // 当前页
       pagenum: 1,
       //   页容量
@@ -181,44 +180,44 @@ export default {
       // 控制添加模态框显示影藏
       addDialog: false,
       // 设置表头的宽度
-      formLabelWidth: '110px',
+      formLabelWidth: "110px",
       // 添加弹框数据
       addUser: {
-        username: '',
-        password: '',
-        email: '',
-        mobile: '',
+        username: "",
+        password: "",
+        email: "",
+        mobile: ""
       },
       // 控制编辑模态框显示影藏
       editDialog: false,
       // 编辑 修改数据
       xiugUser: {
-        username: '',
-        email: '',
-        mobile: '',
-        id: '',
+        username: "",
+        email: "",
+        mobile: "",
+        id: ""
       },
       // 控制分配角色模态框显示影藏
       assignRoles: false,
       // 分配角色 获取的数据
       assignRolesList: {
-        username: '',
-        id: '',
-        rid: '',
+        username: "",
+        id: "",
+        rid: ""
       },
       // 分配用户角色下拉宽里的值
-      assignRolesNNList: [],
+      assignRolesNNList: []
     };
   },
   methods: {
     // 获取用户数据列表
     nEget() {
       this.$http({
-        method: 'GET',
+        method: "GET",
         url: `users?pagenum=${this.pagenum}&pagesize=${this.pagesize}&query=${
           this.query
-        }`,
-      }).then((res) => {
+        }`
+      }).then(res => {
         // console.log(res.data);
         const { data, meta } = res.data;
         if (meta.status === 200) {
@@ -253,56 +252,56 @@ export default {
     // 添加用户弹出框  点击确认按钮 提交请求
     SubmitTo() {
       this.$http({
-        method: 'post',
-        url: 'users',
-        data: this.addUser,
-      }).then((res) => {
+        method: "post",
+        url: "users",
+        data: this.addUser
+      }).then(res => {
         console.log(res);
         if (res.data.meta.status === 201) {
           this.$message({
-            message: '添加成功',
-            type: 'success',
+            message: "添加成功",
+            type: "success"
           });
           this.nEget();
           this.addDialog = false;
           for (const cksl in this.addUser) {
-            this.addUser[cksl] = '';
+            this.addUser[cksl] = "";
           }
         }
       });
     },
     // 删除用户
     deleteUser(id) {
-      this.$confirm('确认要删除该用户么？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
+      this.$confirm("确认要删除该用户么？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
         .then(() => {
           this.$http({
-            method: 'delete',
-            url: `users/${id}`,
-          }).then((res) => {
+            method: "delete",
+            url: `users/${id}`
+          }).then(res => {
             this.$message({
-              type: 'success',
-              message: '删除成功!',
+              type: "success",
+              message: "删除成功!"
             });
             this.nEget();
           });
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除',
+            type: "info",
+            message: "已取消删除"
           });
         });
     },
     // 编辑用户弹出框  同时用当前数据源的ID去获取 数据渲染到编辑框里
     editop(id) {
       this.$http({
-        method: 'GET',
-        url: `users/${id}`,
-      }).then((res) => {
+        method: "GET",
+        url: `users/${id}`
+      }).then(res => {
         const { data, meta } = res.data;
         if (meta.status === 200) {
           this.xiugUser = data;
@@ -314,14 +313,14 @@ export default {
     // 编辑弹出框里  确认按钮  提交编辑后的内容
     editUser() {
       this.$http({
-        method: 'put',
+        method: "put",
         url: `users/${this.xiugUser.id}`,
-        data: this.xiugUser,
-      }).then((res) => {
+        data: this.xiugUser
+      }).then(res => {
         if (res.data.meta.status === 200) {
           this.$message({
-            message: '更新成功',
-            type: 'success',
+            message: "更新成功",
+            type: "success"
           });
           this.editDialog = false;
           this.nEget();
@@ -331,14 +330,14 @@ export default {
     // 修改用户状态的方法
     zTmg_state(id, mg_state) {
       this.$http({
-        method: 'put',
-        url: `users/${id}/state/${mg_state}`,
-      }).then((res) => {
+        method: "put",
+        url: `users/${id}/state/${mg_state}`
+      }).then(res => {
         const { data, meta } = res.data;
         if (meta.status === 200) {
           this.$message({
-            message: '设置状态成功',
-            type: 'success',
+            message: "设置状态成功",
+            type: "success"
           });
         }
       });
@@ -346,9 +345,9 @@ export default {
     // 点击用户权限 按钮
     permissions(id) {
       this.$http({
-        method: 'GET',
-        url: `users/${id}`,
-      }).then((res) => {
+        method: "GET",
+        url: `users/${id}`
+      }).then(res => {
         // console.log(res);
         const { data, meta } = res.data;
         if (meta.status === 200) {
@@ -360,9 +359,9 @@ export default {
           this.assignRoles = true;
           // 获取下拉框数据
           this.$http({
-            method: 'GET',
-            url: 'roles',
-          }).then((res) => {
+            method: "GET",
+            url: "roles"
+          }).then(res => {
             const { data, meta } = res.data;
             if (meta.status === 200) {
               this.assignRolesNNList = data;
@@ -374,28 +373,28 @@ export default {
     // 用户权限弹出框点确认
     mtYYcTJJ() {
       this.$http({
-        method: 'put',
+        method: "put",
         url: `users/${this.assignRolesList.id}/role`,
         data: {
-          rid: this.assignRolesList.rid,
-        },
-      }).then((res) => {
+          rid: this.assignRolesList.rid
+        }
+      }).then(res => {
         const { data, meta } = res.data;
         if (meta.status === 200) {
           this.$message({
-            message: '分配角色成功',
-            type: 'success',
+            message: "分配角色成功",
+            type: "success"
           });
           this.assignRoles = false;
         }
       });
-    },
+    }
   },
 
   // 当vue 加载完成后执行
   mounted() {
     this.nEget();
-  },
+  }
 };
 </script>
 

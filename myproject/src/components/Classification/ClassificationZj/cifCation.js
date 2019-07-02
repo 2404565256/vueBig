@@ -38,6 +38,13 @@ export default {
             // 新增分类  分类名称
             addvalue: '',
             loading: true,
+            //编辑框显示影藏
+            bjTion: false,
+            //当前行 name 当前行ID 数据源
+            bjValue: {
+                name: '',
+                id: ''
+            }
         };
     },
     methods: {
@@ -68,6 +75,8 @@ export default {
         // 当前页发生改变时触发
         currentPageBi(val) {
             this.currentPage = val;
+
+
             this.getList();
         },
         // 页容量改变时触发
@@ -116,6 +125,61 @@ export default {
                 }
             });
         },
+        //编辑商品分类 按钮弹框
+        primaryBj(id, cat_name) {
+            this.bjValue.name = cat_name
+            this.bjValue.id = id
+            this.bjTion = true
+        },
+        //编辑商品分类 提交
+        addBjValue() {
+            this.$http({
+                method: 'PUT',
+                url: `categories/${this.bjValue.id}`,
+                data: {
+                    cat_name: this.bjValue.name
+                }
+            }).then(res => {
+                const { meta } = res.data;
+                if (meta.status === 200) {
+                    this.$message({
+                        message: "编辑分类成功",
+                        type: 'success',
+                    })
+                    this.getList();
+                    this.clTionFn2();
+                    this.bjTion = false
+                }
+            })
+        },
+        // 删除分类方法
+        deleteBj(id) {
+            this.$confirm('是否删除此商品分类?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.$http({
+                    method: 'DELETE',
+                    url: `categories/${id}`,
+                }).then(res => {
+                    const { meta } = res.data;
+                    if (meta.status === 200) {
+                        this.$message({
+                            message: meta.msg,
+                            type: 'success',
+                        })
+                        this.getList();
+                        this.clTionFn2();
+                    }
+                })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
+        }
     },
     mounted() {
         // 获取所有分类

@@ -11,9 +11,24 @@ import '@/assets/css/index.css';
 // 把axios 提取为组件@/assets/js/myaxios.js
 import axios from '@/assets/js/myaxios.js';
 
+import moment from 'moment'
+// 富文本编辑框
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+
+Vue.use(VueQuillEditor)
+
 Vue.use(axios);
 
 Vue.use(ElementUI);
+
+// 定义全局过滤器
+Vue.filter('timeformate', function (value) {
+  // 处理时间：用一个第三方包来处理 moment
+  return moment(value).format('YYYY-MM-DD hh:mm:ss a')
+})
 
 // 把插件注册为全局组件
 Vue.component(ElTreeGrid.name, ElTreeGrid);

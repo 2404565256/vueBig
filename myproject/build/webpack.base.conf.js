@@ -4,7 +4,7 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 
-function resolve (dir) {
+function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
 
@@ -23,6 +23,13 @@ module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: {
     app: './src/main.js'
+  },
+  // 注册百度地图
+  externals: {
+    // 注册百度地图
+    "BMap": "BMap",
+    // 注册vue
+    "vue": "Vue"
   },
   output: {
     path: config.build.assetsRoot,
